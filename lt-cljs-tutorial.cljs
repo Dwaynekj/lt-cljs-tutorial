@@ -678,6 +678,7 @@ a-list
 
 ;; Here is a function that takes a list. It dispatches on the first element
 ;; of the list!
+;; Note that this example uses destructuring, which is covered later.
 
 (defmulti parse (fn [[f & r :as form]] f))
 
@@ -792,15 +793,15 @@ some-x
 (let [[r g b] [255 255 150]]
   g)
 
-;; _ is just a convention for saying that you are not interested at the
-;; item in the corresponding position. it has no other special meaning.
-;; Here we're only interested at the third local variable named `b`.
+;; _ is just a convention for saying that you are not interested in the
+;; item at the corresponding position. It has no other special meaning.
+;; Here we're only interested in the third local variable named `b`.
 
 (let [[_ _ b] [255 255 150]]
   b)
 
 ;; destructuring function arguments works just as well. Here we are
-;; only intersted at the second argument `g`.
+;; only interested in the second argument `g`.
 
 (defn green [[_ g _]] g)
 
@@ -832,11 +833,8 @@ some-x
 (let [{:strs [first last]} {"first" "Bob" "last" "Smith"}]
   [first last])
 
-(let [first 1
-      last 2
-      {:syms [first last]} {'first "Bob" 'last "Smith"}]
+(let [{:syms [first last]} {'first "Bob" 'last "Smith"}]
   [first last])
-
 
 ;; The above map destructuring form is very useful when you need to
 ;; define a function with optional, non positional and defaulted
@@ -1038,7 +1036,7 @@ x
 ;; ------------------------------------------------------------------------------
 
 ;; If you want to change the value of an atom on the basis of its current value,
-;; you can use `swap!`. In its simplest form `swap!` accept as first argument
+;; you can use `swap!`. In its simplest form, `swap!` accepts as a first argument
 ;; the atom itself and as a second argument an updating function of one argument
 ;; which will be instantiated with the current value of the atom. `swap!` returns
 ;; the new value of the atom.
