@@ -80,6 +80,7 @@
 
 x
 
+js/lt_cljs_tutorial.x
 ;; You can also refer to top level definitions by fully qualifying them.
 
 lt-cljs-tutorial/x
@@ -171,6 +172,7 @@ lt-cljs-tutorial/x
 
 (def shallow #js {"foo" [1 2 3]})
 
+;;js->clj is recursive
 
 ;; Constructing a type
 ;; ----------------------------------------------------------------------------
@@ -372,6 +374,12 @@ a-map
 ;; in ClojureScript code.
 
 (identity :foo)
+(= :foo :foo)
+(= (keyword "foo") :foo)
+
+;; Weak-maps are not available in ClojureScript
+;; CLojure use weak-maps for interning and garbage collection
+(identical? (keyword "foo") :foo)
 
 ;; If you add an additional preceding colon you'll get a namespaced keyword.
 
@@ -1134,6 +1142,17 @@ x
 (get {:foo "bar"} :foo)
 (get [:cat :bird :dog] 1)
 
+(satisfies? ILookup {:foo "bar"})
+(satisfies? ILookup [1 2 3])
+(satisfies? ILookup (js-obj))
+
+
+;; DJ: Protocols and Interfaces
+;; Protocols are safer than banging on the prototype yourself
+;; because they namespace the new properties with various specific information
+;; Clojure types
+;; Cljs protocols
+(js-keys (.-prototype (type [])))
 ;; Map destructuring actually desugars into `get` calls. That means if you extend
 ;; your type to ILookup it will also support map destructuring!
 
@@ -1207,6 +1226,8 @@ x
           (aget obj k)
           not-found)))))
 
+;; reify returns an instance
+
 ;; We can then selectively make JavaScript objects work with `get`.
 
 (get (->lookup #js {"foo" "bar"}) :foo)
@@ -1224,6 +1245,14 @@ x
 
 ;; Light Table ships with a older version of ClojureScript and does not yet
 ;; support specify
+
+;; Original methods work. Specifies for an particular instance of a Clojure immutable value
+;; Reify takes a type and returns a new interface for that type losing all old information on that type
+;; Reify can work on anything
+(specify [1 2 3]
+    MyProtocol
+         (awesome [_] "This instance is awesome")
+         )
 
 
 ;; Macros
@@ -1462,3 +1491,7 @@ x
 (aset yucky-stuff 1 4)
 
 yucky-stuff
+
+
+;;Cljsbuild doesnot detect dependency changes
+;;Run cljsbuild clean gives you a new state
